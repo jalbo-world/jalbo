@@ -1,0 +1,17 @@
+# temp files
+.DS_Store
+temp
+
+# package management
+node_modules/
+.pnp.*
+
+# build artifacts
+*.tsbuildinfo
+
+# secrets
+.secrets
+.env
+.env*
+!.env.example
+*.log
