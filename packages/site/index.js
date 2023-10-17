@@ -71,10 +71,12 @@ const sleep = (ms) => {
  * Main function.
  */
 const main = async () => {
+  console.log('Grabbing Jalbo link...')
   const tick = Date.now()
   const link = await jalbo()
-  const tock = Date.now()
-  await sleep(Math.max(0, 3000 - (tock - tick)))
+  const tock = Date.now() - tick
+  console.log(`Grabbed Jalbo link in ${tock}ms`)
+  await sleep(Math.max(0, 3000 - elapsed))
   redirect(link)
 }
 
