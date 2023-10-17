@@ -68,11 +68,23 @@ const sleep = (ms) => {
 }
 
 /**
+ * Waits for an object to exist.
+ * 
+ * @param {*} obj Object to wait for.
+ */
+const wait = async (obj) => {
+  while (!obj) {
+    await sleep(200)
+  }
+}
+
+/**
  * Main function.
  */
 const main = async () => {
   const tick = Date.now()
   const link = await jalbo()
+  await wait(window.plausible)
   const tock = Date.now()
   await sleep(Math.max(0, 3000 - (tock - tick)))
   redirect(link)
