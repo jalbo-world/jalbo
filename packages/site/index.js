@@ -80,5 +80,11 @@ const main = async () => {
   redirect(link)
 }
 
-// Run the main function.
-main()
+// Run the main function on load.
+window.onload = main
+window.onunload = () => {}
+window.onpageshow = (e) => {
+  if (e.persisted) {
+    main()
+  }
+}
