@@ -31,7 +31,7 @@ const config = async (user, key, fallback) => {
       break
     } catch (err) {
       console.log(err)
-      await sleep(200)
+      await sleep(1000)
     }
   }
 
