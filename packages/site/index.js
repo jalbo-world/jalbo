@@ -21,7 +21,7 @@ const config = async (user, key, fallback) => {
   const contract = new ethers.Contract(
     CONFIG_ADDRESS,
     CONFIG_ABI,
-    ethers.getDefaultProvider(CONFIG_NETWORK)
+    new ethers.providers.InfuraProvider(CONFIG_NETWORK)
   )
 
   let res = undefined
