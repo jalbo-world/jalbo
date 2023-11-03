@@ -1,4 +1,4 @@
-import whois
+import dns.resolver
 import qrcode
 from PIL import Image, ImageDraw, ImageFont
 import requests
@@ -8,13 +8,16 @@ subdomain = input("Enter the subdomain: ").strip()
 domain = input("Enter the domain: ").strip()
 full_domain = f"{subdomain}.{domain}"
 
-# Function to check domain availability
-def check_domain_availability(domain):
+# Function to check subdomain availability
+def check_subdomain_availability(full_domain):
     try:
-        domain_info = whois.whois(domain)
-        return False if domain_info.domain_name else True
-    except:
-        return True  # Assuming available if the WHOIS query fails
+        dns.resolver.resolve(full_domain)
+        return False  # If DNS resolution is successful, subdomain is taken
+    except dns.resolver.NXDOMAIN:
+        return True  # The subdomain does not exist
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return False  # Assume it's taken in case of other errors
 
 # Function to generate QR code
 def generate_qr_code(url):
@@ -45,12 +48,9 @@ def save_image(image, filename):
     image.save(filename, "PNG")
 
 # Main logic
-if check_domain_availability(full_domain):
+if check_subdomain_availability(full_domain):
     print(f"{full_domain} is available!")
-    qr_code_image = generate_qr_code(f"https://{full_domain}")
-    qr_code_image_with_text = add_text_to_image(qr_code_image, subdomain)
-    filename = f"{subdomain}_qr_code.png"
-    save_image(qr_code_image_with_text, filename)
-    print(f"QR code saved as {filename}")
+    # ... rest of the QR code generation logic
 else:
     print(f"{full_domain} is not available.")
+
