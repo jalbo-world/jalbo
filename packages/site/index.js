@@ -24,7 +24,7 @@ const request = async (schema, attester, content) => {
       body: JSON.stringify({
         query: `
           query Query($where: AttestationWhereInput, $take: Int) {
-            attestations(where: $where, take: $take) {
+            attestations(where: $where, take: $take, orderBy: {time: desc}) {
               id
               schemaId
               attester
