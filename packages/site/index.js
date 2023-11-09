@@ -1,21 +1,23 @@
 // Configuration
 const CONFIG_MANAGER_SCHEMA = '0x81ba1506292bcde4ceae1d8960f26f2e62c9c61b7ecbe3cd3d73682453fa8b7c'
 const CONFIG_RECORD_SCHEMA = '0x245b64ff9792a92c3026895d09423841ca1e772e877c42d3a3159a268c7ffec2'
+const CONFIG_MAINNET_SCHEMA = '0x16e6e75bf7019f190aaf70111df413b9347a773bb35caf925f3c829643881c6a'
 const CONFIG_ADMIN = '0x4F24f7cF6Bfc7F6A00a10d4d5AB6a5296a1416d8'
 const CONFIG_BACKUP = 'https://en.wikipedia.org/wiki/Human_error'
 
 /**
  * Performs a GraphQL request to EAS.
  * 
+ * @param {*} network  Network to perform the request on.
  * @param {*} schema   Schema ID to match against.
  * @param {*} attester Attester to match against.
  * @param {*} content  Content to match against.
  * 
  * @returns Result of the GraphQL request.
  */
-const request = async (schema, attester, content) => {
+const request = async (network, schema, attester, content) => {
   return (await fetch(
-    'https://optimism.easscan.org/graphql',
+    `https://${network}.easscan.org/graphql`,
     {
       method: 'POST',
       headers: {
@@ -64,10 +66,27 @@ const request = async (schema, attester, content) => {
  */
 const manager = async (subdomain) => {
   return (await request(
+    'optimism',
     CONFIG_MANAGER_SCHEMA,
     CONFIG_ADMIN,
     subdomain
   )).data.attestations[0].recipient
+}
+
+/**
+ * Checks the mainnet flag for a specific subdomain.
+ * 
+ * @param {*} subdomain Subdomain to grab the mainnet flag for.
+ * 
+ * @returns Mainnet flag for the given subdomain.
+ */
+const mainnet = async (subdomain) => {
+  return (await request(
+    'optimism',
+    CONFIG_MAINNET_SCHEMA,
+    await manager(subdomain),
+    'true'
+  )).data.attestations[0] !== undefined
 }
 
 /**
@@ -80,6 +99,7 @@ const manager = async (subdomain) => {
 const record = async (subdomain) => {
   try {
     return JSON.parse((await request(
+      await mainnet(subdomain) ? 'optimism' : 'optimism-goerli-bedrock',
       CONFIG_RECORD_SCHEMA,
       await manager(subdomain),
       subdomain
