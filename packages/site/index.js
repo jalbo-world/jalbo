@@ -99,7 +99,7 @@ const mainnet = async (subdomain) => {
 const record = async (subdomain) => {
   try {
     return JSON.parse((await request(
-      await mainnet(subdomain) ? 'optimism' : 'optimism-goerli-bedrock',
+      await mainnet(subdomain) ? 'optimism' : 'optimism-sepolia',
       CONFIG_RECORD_SCHEMA,
       await manager(subdomain),
       subdomain
